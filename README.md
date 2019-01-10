@@ -4,6 +4,12 @@ This package is about push notification for Andoid and IOS
 ```
 Go version: 1.10.4
 ```
+
+### Install
+```
+go get github.com/ashvin-chauhan/go-pushnotification
+```
+
 ### Android
 ```
 push_notification.Android("Hi, Android!", "Devise Token", "Server key")
