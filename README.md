@@ -17,5 +17,5 @@ push_notification.Android("Hi, Android!", "Devise Token", "Server key")
 
 ### IOS
 ```
-push_notification.IOS("Hi, Android!", "Devise Token", "APNs pem file path")
+push_notification.IOS("Hi, IOS!", "Devise Token", "APNs pem file path")
 ```
