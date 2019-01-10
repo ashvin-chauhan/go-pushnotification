@@ -1,4 +1,4 @@
-package pushnotification
+package push_notification
 
 import (
 	"fmt"
