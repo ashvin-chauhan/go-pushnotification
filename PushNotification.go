@@ -67,7 +67,7 @@ func IOS(message string, device_token string, apns_file_path string) {
 	})
 }
 
-func IOSUsingP8(message string, devise_token string, apns_file_path string, key_id string, team_id string, topic string) {
+func IOSUsingP8(message string, devise_token string, apns_file_path string, key_id string, team_id string, topic string, environment string) {
 	try.This(func() {
 		authKey, err := token.AuthKeyFromFile(apns_file_path)
 		if err != nil {
@@ -89,7 +89,9 @@ func IOSUsingP8(message string, devise_token string, apns_file_path string, key_
 		}
 
 		client := apns2.NewTokenClient(token)
-		client.Production()
+		if environment == "production" {
+			client.Production()
+		}
 		res, err := client.Push(notification)
 
 		if err != nil {
