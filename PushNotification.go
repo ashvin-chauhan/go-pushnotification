@@ -2,10 +2,15 @@ package push_notification
 
 import (
 	"fmt"
+	"log"
 	"path/filepath"
-	"github.com/NaySoftware/go-fcm"
+
+	fcm "github.com/NaySoftware/go-fcm"
 	"github.com/anachronistic/apns"
 	"github.com/manucorporat/try"
+	"github.com/sideshow/apns2"
+	"github.com/sideshow/apns2/payload"
+	"github.com/sideshow/apns2/token"
 )
 
 func Android(message string, device_token string, server_key string) {
@@ -55,6 +60,48 @@ func IOS(message string, device_token string, apns_file_path string) {
 		fmt.Println("Alert:", alert)
 		fmt.Println("Success:", resp.Success)
 		fmt.Println("Error:", resp.Error)
+	}).Finally(func() {
+		fmt.Println("Finally block")
+	}).Catch(func(e try.E) {
+		fmt.Println("Catch", e)
+	})
+}
+
+func IOSUsingP8(message string, devise_token string, apns_file_path string, key_id string, team_id string, topic string) {
+	try.This(func() {
+		authKey, err := token.AuthKeyFromFile(apns_file_path)
+		if err != nil {
+			fmt.Println("token error:", err)
+		}
+
+		token := &token.Token{
+			AuthKey: authKey,
+			KeyID:   key_id,
+			TeamID:  team_id,
+		}
+
+		payload := payload.NewPayload().Alert(message).Badge(1).Custom("key", "val")
+
+		notification := &apns2.Notification{
+			DeviceToken: devise_token,
+			Topic:       topic,
+			Payload:     payload,
+		}
+
+		client := apns2.NewTokenClient(token)
+		res, err := client.Push(notification)
+
+		if err != nil {
+			log.Println("[PUSH NOTIFICATION ERROR]", err)
+			return
+		}
+
+		if res.Sent() {
+			log.Println("Sent:", res.ApnsID)
+		} else {
+			fmt.Printf("Not Sent: %v %v %v\n", res.StatusCode, res.ApnsID, res.Reason)
+		}
+
 	}).Finally(func() {
 		fmt.Println("Finally block")
 	}).Catch(func(e try.E) {
