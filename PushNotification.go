@@ -89,6 +89,7 @@ func IOSUsingP8(message string, devise_token string, apns_file_path string, key_
 		}
 
 		client := apns2.NewTokenClient(token)
+		client.Production()
 		res, err := client.Push(notification)
 
 		if err != nil {
